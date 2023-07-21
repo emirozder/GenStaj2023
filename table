@@ -1,0 +1,44 @@
+<TableContainer component={Paper} sx={{ maxHeight: '300px' }}>
+          <Table aria-aria-label="simple table" stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Birth Date</TableCell>
+                <TableCell>Gender</TableCell>
+                <TableCell>Resource Type</TableCell>
+                <TableCell>Address</TableCell>
+              </TableRow>
+            </TableHead>
+            {/* <TableBody sx={{ backgroundColor: '#efefef' }}>
+              {patients?.map((patient) => (
+                <TableRow
+                  key={patient.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell>{patient.id || 'null'}</TableCell>
+                  <TableCell>{patient.name?.[0]?.given?.[0] || patient.name?.[0]?.text || 'null'} {patient.name?.[0]?.family || 'null'}</TableCell>
+                  <TableCell>{patient.birthDate || 'null'}</TableCell>
+                  <TableCell>{patient.gender || 'null'}</TableCell>
+                  <TableCell>{patient.resourceType || 'null'}</TableCell>
+                  <TableCell>{patient.address?.[0]?.text || 'null'}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody> */}
+            <TableBody sx={{ backgroundColor: '#efefef' }}>
+              {patient?.map((patient) => (
+                <TableRow
+                  key={patient.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell>{patient.id || 'null'}</TableCell>
+                  <TableCell>{patient.name?.[0]?.given?.[0] || patient.name?.[0]?.text || 'null'} {patient.name?.[0]?.family || 'null'}</TableCell>
+                  <TableCell>{patient.birthDate || 'null'}</TableCell>
+                  <TableCell>{patient.gender || 'null'}</TableCell>
+                  <TableCell>{patient.resourceType || 'null'}</TableCell>
+                  <TableCell>{patient.address?.[0]?.text || 'null'}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
