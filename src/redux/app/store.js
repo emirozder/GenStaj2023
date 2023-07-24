@@ -3,7 +3,7 @@ import patientSlice from "../features/patient/patientSlice";
 
 
 
-export const strore = configureStore({
+export const store = configureStore({
     reducer: {
         patient: patientSlice,
     }

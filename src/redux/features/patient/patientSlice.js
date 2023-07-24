@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import Client from "fhir-kit-client";
+import { fhirClient } from "../../../url/clientDegiskeni";
 
 
 const initialState = {
     patient: [],
+    response: {},
     nextUrl: '',
     prevUrl: '',
     currentPage: 0,
@@ -12,37 +13,22 @@ const initialState = {
     error: null
 }
 
+export const getPatient = createAsyncThunk('getPatient', async ({type, bundle}) => {
+    let response;
 
-export const getPatient = createAsyncThunk('getPatient', async (type, { getState }) => {
-    //const url = 'https://hapi.fhir.org/baseR5/'
-    let url;
     if (type === 'next') {
-        url = getState().patient.nextUrl;
+        response = await fhirClient.nextPage(bundle);
     }
     else if (type === 'prev') {
-        url = getState().patient.prevUrl;
+        response = await fhirClient.prevPage(bundle);
     }
     else {
-        url = 'https://hapi.fhir.org/baseR5/'
-    }
-
-    const fhirClient = new Client({
-        baseUrl: url
-    });
-
-    const response = await fhirClient
-        .search({
+        response = await fhirClient.search({
             resourceType: 'Patient',
             searchParams: {}
         });
-
-
-    //const patData = getState().patient.patient.concat(response.entry.map(entry => entry.resource));
-    const patData = response.entry.map(entry => entry.resource);
-    const nextUrl = response.link.find(link => link.relation === 'next')?.url;
-    const prevUrl = response.link.find(link => link.relation === 'prev')?.url;
-
-    return { patData, nextUrl, prevUrl }
+    }
+    return response
 });
 
 
@@ -53,7 +39,7 @@ export const patientSlice = createSlice({
         setCurrentPage: (state, action) => {
             state.currentPage = action.payload;
         },
-        setRowsPerPage: (state,action) => {
+        setRowsPerPage: (state, action) => {
             state.rowsPerPage = action.payload;
             state.currentPage = 0;
         }
@@ -65,9 +51,10 @@ export const patientSlice = createSlice({
         });
         builder.addCase(getPatient.fulfilled, (state, action) => {
             state.loading = false;
-            state.patient = action.payload.patData;
-            state.nextUrl = action.payload.nextUrl;
-            state.prevUrl = action.payload.prevUrl;
+            state.response = action.payload;
+            state.patient = action.payload?.entry.map(entry => entry.resource)
+            state.nextUrl = action.payload?.link.find(link => link.relation === 'next')
+            state.prevUrl = action.payload?.link.find(link => link.relation === 'prev')
         });
         builder.addCase(getPatient.rejected, (state, action) => {
             state.loading = false;
