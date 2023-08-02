@@ -1,63 +1,80 @@
 import React from 'react'
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Grid } from "@mui/material"
-import { getPatient, setRowsPerPage, setCurrentPage } from "./redux/features/patient/patientSlice";
-import PatientTable from "./pages/PatientTable";
+import { getPatient, setCurrentPage } from "../redux/features/patient/patientSlice";
+import PatientTable from '../pages/PatientTable';
 
-const Patient = () => {
+const Patient = ({ searchedPatient, handlePageChangeSearch, totalSearch }) => {
+
     //#region DECLARATIONS AND FIRST DATA FETCHING starts 
 
     const dispatch = useDispatch();
-    const { patient, nextUrl, prevUrl, loading, error, currentPage, rowsPerPage } = useSelector(state => state.patient)
+    const { patient, response, nextUrl, prevUrl, loading, error, currentPage } = useSelector(state => state.patient)
+
     console.log("veri:", patient);
+    console.log("search edilmiş veriii:", searchedPatient);
+    console.log("search edilmiş veri lengthi:", searchedPatient.length);
+    //console.log("gelen response bundle'ı:", response);
 
     useEffect(() => {
-        dispatch(getPatient())
+        dispatch(getPatient(''))
     }, [dispatch])
 
     //#endregion
 
 
-
     //#region PAGINATION and NEW DATA FETCHING starts
 
     const handlePageChange = (event, newPage) => {
-        if (newPage === currentPage + 1 && newPage === patient.length / rowsPerPage && nextUrl) {
-            dispatch(getPatient('next'));
+        if (newPage > currentPage) {
+            const params = {
+                type: 'next',
+                bundle: response
+            }
+            dispatch(getPatient(params));
             dispatch(setCurrentPage(0));
-        } else if (newPage === -1 && nextUrl) {
-            dispatch(getPatient('prev'));
+        } else if (newPage < currentPage) {
+            const params = {
+                type: 'prev',
+                bundle: response
+            }
+            dispatch(getPatient(params));
             dispatch(setCurrentPage(0));
         } else {
             dispatch(setCurrentPage(newPage));
         }
     };
 
-    const handleChangeRowsPerPage = event => {
-        dispatch(setRowsPerPage(+event.target.value));
-        dispatch(setCurrentPage(0));
-    };
-
     //#endregion
 
 
     return (
-        <Container className="App" fixed >
-            <Grid sx={{ marginTop: '50px', paddingBottom: '50px', paddingTop: '50px' }}>
-                <PatientTable
-                    patient={patient}
-                    nextUrl={nextUrl}
-                    prevUrl={prevUrl}
+        <>
+            {
+                searchedPatient.length > 0 ? (<PatientTable
+                    patient={searchedPatient}
                     loading={loading}
                     error={error}
                     currentPage={currentPage}
-                    rowsPerPage={rowsPerPage}
+                    rowsPerPage={500}
+                    handlePageChange={handlePageChangeSearch}
+                    nextUrl={nextUrl}
+                    prevUrl={prevUrl}
+                    total={totalSearch}
+                />) : <PatientTable
+                    patient={patient}
+                    loading={loading}
+                    error={error}
+                    currentPage={currentPage}
+                    rowsPerPage={500}
                     handlePageChange={handlePageChange}
-                    handleChangeRowsPerPage={handleChangeRowsPerPage}
+                    nextUrl={nextUrl}
+                    prevUrl={prevUrl}
+                    total={response.total}
                 />
-            </Grid>
-        </Container>
+            }
+
+        </>
     );
 }
 
