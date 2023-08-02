@@ -60,7 +60,7 @@ const AddPatient = () => {
             telecom: [{ system: 'phone', value: values.telecom }],
             address: [{ text: [values.address] }],
         }
-        console.log("gidecek values", addData)
+        //console.log("gidecek values", addData)
         if (!values.given) {
             window.alert("Given Name can't be empty!")
         } else if (!values.family) {

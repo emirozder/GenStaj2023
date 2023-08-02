@@ -33,21 +33,17 @@ export const getPatient = createAsyncThunk('getPatient', async ({ type, bundle }
 
 export const getSearchedPatient = createAsyncThunk('getSearchedPatient', async ({ type, bundle, keyword }) => {
     let searchedResponse;
-    console.log("searchpat'a girdi, buraya gelen family:", keyword);
     if (type === 'next') {
         searchedResponse = await fhirClient.nextPage(bundle);
-        console.log("if'e girdi:");
     }
     else if (type === 'prev') {
         searchedResponse = await fhirClient.prevPage(bundle);
-        console.log("else if'e girdi:");
     }
     else {
         searchedResponse = await fhirClient.search({
             resourceType: 'Patient',
             searchParams: { _count: '10', _total: 'accurate', _content: keyword }
         });
-        console.log("else'e girdi:");
     }
 
     if (searchedResponse.entry.length > 0) return searchedResponse;
@@ -56,16 +52,20 @@ export const getSearchedPatient = createAsyncThunk('getSearchedPatient', async (
 });
 
 export const addPatient = createAsyncThunk('addPatinet', async (data) => {
-    console.log("add pat datası: ", data)
     await fhirClient.create({
         resourceType: 'Patient', body: data
     });
 });
 
 export const deletePatient = createAsyncThunk('deletePatinet', async (id) => {
-    console.log("silinecek pat id'si: ", id)
     const response = await fhirClient.delete({resourceType: 'Patient', id});
     return response
+});
+
+export const updatePatient = createAsyncThunk('updatePatinet', async (data) => {
+    await fhirClient.update({
+        resourceType: 'Patient', id: data.id?.[0], body: data
+    });
 });
 
 export const patientSlice = createSlice({
@@ -142,6 +142,20 @@ export const patientSlice = createSlice({
             //if (action.payload?.entry) state.searchedPatient = action.payload?.entry.map(entry => entry.resource)
         });
         builder.addCase(deletePatient.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        });
+        //#endregion
+        
+        //#region updatePatient AddCase
+        builder.addCase(updatePatient.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        });
+        builder.addCase(updatePatient.fulfilled, (state, action) => {
+            state.loading = false;
+        });
+        builder.addCase(updatePatient.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         });
