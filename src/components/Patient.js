@@ -13,7 +13,6 @@ const Patient = ({ searchedPatient, handlePageChangeSearch, totalSearch }) => {
 
     console.log("veri:", patient);
     console.log("search edilmiş veriii:", searchedPatient);
-    console.log("search edilmiş veri lengthi:", searchedPatient.length);
     //console.log("gelen response bundle'ı:", response);
 
     useEffect(() => {
@@ -56,7 +55,7 @@ const Patient = ({ searchedPatient, handlePageChangeSearch, totalSearch }) => {
                     loading={loading}
                     error={error}
                     currentPage={currentPage}
-                    rowsPerPage={500}
+                    rowsPerPage={searchedPatient.length}
                     handlePageChange={handlePageChangeSearch}
                     nextUrl={nextUrl}
                     prevUrl={prevUrl}
@@ -66,7 +65,7 @@ const Patient = ({ searchedPatient, handlePageChangeSearch, totalSearch }) => {
                     loading={loading}
                     error={error}
                     currentPage={currentPage}
-                    rowsPerPage={500}
+                    rowsPerPage={patient.length}
                     handlePageChange={handlePageChange}
                     nextUrl={nextUrl}
                     prevUrl={prevUrl}

@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { TextField, Button, Stack } from "@mui/material"
+import { TextField, Button, Stack, Toolbar, Grid, IconButton, AppBar, Paper } from "@mui/material"
 import { getSearchedPatient, setCurrentPage } from '../redux/features/patient/patientSlice';
 import Patient from './Patient';
 import AddPatient from './AddPatient';
+import SearchIcon from '@mui/icons-material/Search';
 
 const SearchPatient = () => {
 
@@ -58,35 +59,37 @@ const SearchPatient = () => {
 
   return (
     <>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        mb={'20px'}
-        ml={'10px'}
-        mr={'10px'}
-      >
-        <Stack
-          direction="row"
-          alignItems="center"
-          spacing={2}
+      <Paper sx={{ margin: 'auto', overflow: 'hidden' }}>
+        <AppBar
+          position="static"
+          color="default"
+          elevation={0}
+          sx={{ borderBottom: '1px solid rgba(0, 0, 0, 0.12)' }}
         >
-          <TextField
-            id="outlined-search"
-            label="Search"
-            type="search"
-            color="secondary"
-            value={searchKey}
-            onChange={e => setSearchKey(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={searchPatient}>Search</Button>
-        </Stack>
-
-        <AddPatient />
-      </Stack>
+          <Toolbar>
+            <Grid container spacing={2} alignItems="center"  py={1}>
+              <Grid item >
+                <TextField
+                  id="outlined-search"
+                  label="Search"
+                  type="search"
+                  color="primary"
+                  value={searchKey}
+                  onChange={e => setSearchKey(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs>
+                <IconButton aria-label="delete" size="small" color="info" onClick={searchPatient}>
+                  <SearchIcon color="primary" sx={{ display: 'block' }} />
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <AddPatient />
+              </Grid>
+            </Grid>
+          </Toolbar>
+        </AppBar>
+      </Paper>
 
       {
         searchedPatient.length >= 0 ? (<Patient

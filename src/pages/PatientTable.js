@@ -11,9 +11,10 @@ const PatientTable = ({ patient, nextUrl, prevUrl, loading, error, currentPage, 
         {error && patient.error}
         {loading ? (<LoadingModal />) : (
           <Table aria-label="simple table">
-            <TableHead sx={{ backgroundColor: '#9c27b0', color: 'white' }}>
+            <TableHead sx={{ backgroundColor: '#009be5', color: 'white' }}>
               <TableRow>
                 <TableCell sx={{ color: 'white' }}>ID</TableCell>
+                <TableCell sx={{ color: 'white' }}>Citizenship No</TableCell>
                 <TableCell sx={{ color: 'white' }}>Name</TableCell>
                 <TableCell sx={{ color: 'white' }}>Birth Date</TableCell>
                 <TableCell sx={{ color: 'white' }}>Gender</TableCell>
@@ -30,6 +31,7 @@ const PatientTable = ({ patient, nextUrl, prevUrl, loading, error, currentPage, 
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell>{patient.id || 'null'}</TableCell>
+                  <TableCell>{patient.identifier?.[0]?.type?.coding?.[0]?.code === "CZ" ? (patient.identifier?.[0]?.value) :  ('null')} </TableCell>
                   <TableCell>{patient.name?.[0]?.given?.[0] || patient.name?.[0]?.text || 'null'} {patient.name?.[0]?.family || 'null'}</TableCell>
                   <TableCell>{patient.birthDate || 'null'}</TableCell>
                   <TableCell>{patient.gender || 'null'}</TableCell>
@@ -41,6 +43,7 @@ const PatientTable = ({ patient, nextUrl, prevUrl, loading, error, currentPage, 
                     /
                     <UpdatePatient
                       id_val={[patient.id]}
+                      czNo_val={[patient.identifier?.[0]?.value]}
                       given_val={[patient.name?.[0]?.given?.[0] || patient.name?.[0]?.text || 'null']}
                       family_val={[patient.name?.[0]?.family || 'null']}
                       birthDate_val={[patient.birthDate || 'null']}
@@ -56,11 +59,11 @@ const PatientTable = ({ patient, nextUrl, prevUrl, loading, error, currentPage, 
         <TablePagination
           rowsPerPageOptions={[]}
           component="div"
-          count={patient.length}
+          count={total}
           rowsPerPage={rowsPerPage}
           page={currentPage}
           onPageChange={handlePageChange}
-          sx={{ backgroundColor: '#9c27b0', color: 'white' }}
+          sx={{ backgroundColor: '#009be5', color: 'white' }}
           nextIconButtonProps={{
             disabled: !nextUrl
           }}
@@ -68,7 +71,7 @@ const PatientTable = ({ patient, nextUrl, prevUrl, loading, error, currentPage, 
             disabled: !prevUrl
           }}
         />
-        <Typography variant='subtitle1' align='right' paddingRight={1} sx={{ backgroundColor: '#9c27b0', color: 'white' }}>Total Patient Count: {total}</Typography>
+        <Typography variant='subtitle1' align='right' paddingRight={1} sx={{ backgroundColor: '#009be5', color: 'white' }}>Total Patient Count: {total}</Typography>
       </TableContainer>
     </>
   )

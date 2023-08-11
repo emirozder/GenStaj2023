@@ -2,7 +2,6 @@ import React from 'react';
 import { Button, Modal, Box, TextField, Typography, Container, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Stack, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
 import { patientSchema } from '../schemas/patientSchema';
-import CountrySelector from './CountrySelector';
 import Countries from '../components/Countries';
 
 const FormModal = ({ title, btnTxt, open, handleClose, givenName, familyName, birthDate, contact, address, gender, czNo, handleSave }) => {

@@ -11,9 +11,9 @@ const LoadingModal = () => {
         <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
             open={open}
-            //onClick={handleClose}
+            onClick={handleClose}
         >
-            <CircularProgress color="secondary" />
+            <CircularProgress color="primary" />
         </Backdrop>
     )
 }

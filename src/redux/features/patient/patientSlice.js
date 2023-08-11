@@ -25,7 +25,7 @@ export const getPatient = createAsyncThunk('getPatient', async ({ type, bundle }
     else {
         response = await fhirClient.search({
             resourceType: 'Patient',
-            searchParams: { _count: '10', _total: 'accurate' }
+            searchParams: { _count: '10',  _sort: '-_id', _total: 'accurate' }
         });
     }
     return response
@@ -42,7 +42,7 @@ export const getSearchedPatient = createAsyncThunk('getSearchedPatient', async (
     else {
         searchedResponse = await fhirClient.search({
             resourceType: 'Patient',
-            searchParams: { _count: '10', _total: 'accurate', _content: keyword }
+            searchParams: { _count: '10', _sort: '-_id', _total: 'accurate', _content: keyword }
         });
     }
 
@@ -58,8 +58,8 @@ export const addPatient = createAsyncThunk('addPatinet', async (data) => {
 });
 
 export const deletePatient = createAsyncThunk('deletePatinet', async (id) => {
-    const response = await fhirClient.delete({resourceType: 'Patient', id});
-    return response
+    await fhirClient.delete({resourceType: 'Patient', id});
+    //return response
 });
 
 export const updatePatient = createAsyncThunk('updatePatinet', async (data) => {
