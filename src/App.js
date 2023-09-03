@@ -2,7 +2,8 @@ import React from "react";
 import { Box, Container } from "@mui/material"
 import SearchPatient from "./components/SearchPatient";
 import Home from "./pages/Home";
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AppointmentTable from "./pages/AppointmentTable";
 function App() {
 
   return (
@@ -11,7 +12,14 @@ function App() {
     //     <SearchPatient/>
     //   </Box>
     // </Container>
-    <Home/>
+
+    <Home />
+            // <Router>
+            //   <Routes>
+            //     <Route path="/" element={} />
+            //     <Route path="/appointments" element={<AppointmentTable />} />
+            //   </Routes>
+            // </Router>
   );
 }
 

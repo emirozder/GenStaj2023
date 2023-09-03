@@ -14,11 +14,30 @@ import Tabs from '@mui/material/Tabs';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { Menu, MenuItem } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
 function Header(props) {
   const { onDrawerToggle } = props;
+
+  const {t,i18n} = useTranslation()
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const clickHandle = async (lang) => {
+    await i18n.changeLanguage(lang)
+    handleClose()
+  };
+  
 
   return (
     <React.Fragment>
@@ -36,7 +55,7 @@ function Header(props) {
               </IconButton>
             </Grid>
             <Grid item xs />
-            <Grid item>
+            {/* <Grid item>
               <Link
                 href="/"
                 variant="body2"
@@ -52,7 +71,7 @@ function Header(props) {
               >
                 Go to docs
               </Link>
-            </Grid>
+            </Grid> */}
             <Grid item>
               <Tooltip title="Alerts • No alerts">
                 <IconButton color="inherit">
@@ -79,7 +98,7 @@ function Header(props) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Patient List
+              {t('patientList')}
               </Typography>
             </Grid>
             <Grid item>
@@ -93,10 +112,30 @@ function Header(props) {
               </Button> */}
             </Grid>
             <Grid item>
-              <Tooltip title="Help">
-                <IconButton color="inherit">
-                  <HelpIcon />
-                </IconButton>
+              <Tooltip title="">
+                <Button
+                  id="basic-button"
+                  aria-controls={open ? 'basic-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                  onClick={handleClick}
+                  variant='outlined'
+                  color='inherit'
+                >
+                  EN/TR
+                </Button>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={() => clickHandle('en')}>English - EN</MenuItem>
+                  <MenuItem onClick={() => clickHandle('tr')}>Türkçe - TR</MenuItem>
+                </Menu>
               </Tooltip>
             </Grid>
           </Grid>
@@ -104,7 +143,7 @@ function Header(props) {
       </AppBar>
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
         <Tabs value={0} textColor="inherit">
-          <Tab label="Patients" />
+          <Tab label={t('patients')} />
         </Tabs>
       </AppBar>
     </React.Fragment>

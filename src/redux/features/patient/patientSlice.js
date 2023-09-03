@@ -10,7 +10,9 @@ const initialState = {
     prevUrl: '',
     currentPage: 0,
     loading: false,
-    error: null
+    error: null,
+    genders: [],
+    practitioner: []
 }
 
 export const getPatient = createAsyncThunk('getPatient', async ({ type, bundle }) => {
@@ -25,9 +27,19 @@ export const getPatient = createAsyncThunk('getPatient', async ({ type, bundle }
     else {
         response = await fhirClient.search({
             resourceType: 'Patient',
-            searchParams: { _count: '10',  _sort: '-_id', _total: 'accurate' }
+            searchParams: { _count: '10', _sort: '-_id', _total: 'accurate' }
         });
     }
+    return response
+});
+
+export const getPatientByID = createAsyncThunk('getPatientByID', async (id) => {
+    let response;
+
+    response = await fhirClient
+        .search({ resourceType: 'Patient', 
+        searchParams: { _id:id } })
+
     return response
 });
 
@@ -58,7 +70,7 @@ export const addPatient = createAsyncThunk('addPatinet', async (data) => {
 });
 
 export const deletePatient = createAsyncThunk('deletePatinet', async (id) => {
-    await fhirClient.delete({resourceType: 'Patient', id});
+    await fhirClient.delete({ resourceType: 'Patient', id });
     //return response
 });
 
@@ -66,6 +78,23 @@ export const updatePatient = createAsyncThunk('updatePatinet', async (data) => {
     await fhirClient.update({
         resourceType: 'Patient', id: data.id?.[0], body: data
     });
+});
+
+export const getGenders = createAsyncThunk('getGenders', async () => {
+    const finalRequestBody = {
+        resourceType: 'CodeSystem',
+        id: 'administrative-gender'
+    };
+    const response = await fhirClient.read(finalRequestBody);
+    return response;
+});
+
+export const getPractitioners = createAsyncThunk('getPractitioners', async () => {
+    const response = await fhirClient.search({
+        resourceType: 'Practitioner',
+        searchParams: { _count: '20', _sort: '-_id' }
+    });
+    return response
 });
 
 export const patientSlice = createSlice({
@@ -91,6 +120,22 @@ export const patientSlice = createSlice({
             state.prevUrl = action.payload?.link.find(link => link.relation === 'prev')
         });
         builder.addCase(getPatient.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        });
+        //#endregion
+
+        //#region PatientID AddCase
+        builder.addCase(getPatientByID.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        });
+        builder.addCase(getPatientByID.fulfilled, (state, action) => {
+            state.loading = false;
+            state.response = action.payload;
+            state.patient = action.payload?.entry.map(entry => entry.resource)
+        });
+        builder.addCase(getPatientByID.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         });
@@ -146,7 +191,7 @@ export const patientSlice = createSlice({
             state.error = action.error.message;
         });
         //#endregion
-        
+
         //#region updatePatient AddCase
         builder.addCase(updatePatient.pending, (state) => {
             state.loading = true;
@@ -159,6 +204,37 @@ export const patientSlice = createSlice({
             state.loading = false;
             state.error = action.error.message;
         });
+        //#endregion
+
+        //#region getGenders AddCase
+        builder.addCase(getGenders.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getGenders.fulfilled, (state, action) => {
+            state.loading = false;
+            state.genders = action.payload;
+        });
+        builder.addCase(getGenders.rejected, (state) => {
+            state.loading = false;
+        });
+        //#endregion
+
+        //#region Practitioner AddCase
+        // builder.addCase(getPractitioners.pending, (state) => {
+        //     //state.loading = true;
+        //     state.error = null;
+        // });
+        builder.addCase(getPractitioners.fulfilled, (state, action) => {
+            //state.loading = false;
+            state.practitioner = action.payload?.entry.map(entry => entry.resource);
+            // state.practitioner = action.payload?.entry.map(entry => entry.resource)
+            // state.nextUrl = action.payload?.link.find(link => link.relation === 'next')
+            // state.prevUrl = action.payload?.link.find(link => link.relation === 'prev')
+        });
+        // builder.addCase(getPractitioners.rejected, (state, action) => {
+        //     state.loading = false;
+        //     state.error = action.error.message;
+        // });
         //#endregion
     }
 })

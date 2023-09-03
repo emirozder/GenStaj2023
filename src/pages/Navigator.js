@@ -11,41 +11,12 @@ import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import DnsRoundedIcon from '@mui/icons-material/DnsRounded';
 import PermMediaOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActual';
-import PublicIcon from '@mui/icons-material/Public';
-import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
-import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
-import TimerIcon from '@mui/icons-material/Timer';
 import SettingsIcon from '@mui/icons-material/Settings';
-import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
-const categories = [
-  {
-    id: 'Build',
-    children: [
-      {
-        id: 'Patient List',
-        icon: <PeopleIcon />,
-        active: true,
-      },
-      { id: 'Appointment', icon: <DnsRoundedIcon /> },
-      { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
-      { id: 'Locations', icon: <PublicIcon /> },
-      { id: 'Functions', icon: <SettingsEthernetIcon /> },
-      {
-        id: 'Machine learning',
-        icon: <SettingsInputComponentIcon />,
-      },
-    ],
-  },
-  {
-    id: 'Quality',
-    children: [
-      { id: 'Analytics', icon: <SettingsIcon /> },
-      { id: 'Performance', icon: <TimerIcon /> },
-      { id: 'Test Lab', icon: <PhonelinkSetupIcon /> },
-    ],
-  },
-];
+
 
 const item = {
   py: '2px',
@@ -64,36 +35,60 @@ const itemCategory = {
 
 export default function Navigator(props) {
   const { ...other } = props;
+  const { t, i18n } = useTranslation()
 
+  const categories = [
+    {
+      id: t('services'),
+      children: [
+        {
+          id: t('patientList'),
+          icon: <PeopleIcon />,
+          active: true,
+        },
+        { id: t('appointment'), icon: <DnsRoundedIcon /> },
+        { id: t('records'), icon: <PermMediaOutlinedIcon /> },
+      ],
+    },
+    {
+      id: t('other'),
+      children: [
+        { id: t('settings'), icon: <SettingsIcon /> },
+        { id: t('exit'), icon: <ExitToAppIcon /> },
+      ],
+    },
+  ];
+
+  const navigate = useNavigate();
   return (
     <Drawer variant="permanent" {...other}>
-      <List disablePadding>
-        <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>
-          GenStaj2023
-        </ListItem>
-        <ListItem sx={{ ...item, ...itemCategory }}>
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText>Project Overview</ListItemText>
-        </ListItem>
-        {categories.map(({ id, children }) => (
-          <Box key={id} sx={{ bgcolor: '#101F33' }}>
-            <ListItem sx={{ py: 2, px: 3 }}>
-              <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
-            </ListItem>
-            {children.map(({ id: childId, icon, active }) => (
-              <ListItem disablePadding key={childId}>
-                <ListItemButton selected={active} sx={item}>
-                  <ListItemIcon>{icon}</ListItemIcon>
-                  <ListItemText>{childId}</ListItemText>
-                </ListItemButton>
+        <List disablePadding>
+          <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>
+            {t('appTitle')}
+          </ListItem>
+          <ListItem sx={{ ...item, ...itemCategory }} onClick={() => navigate('/')}>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText>{t('homePage')}</ListItemText>
+          </ListItem>
+          {categories.map(({ id, children }) => (
+            <Box key={id} sx={{ bgcolor: '#101F33' }}>
+              <ListItem sx={{ py: 2, px: 3 }} >
+                <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
               </ListItem>
-            ))}
-            <Divider sx={{ mt: 2 }} />
-          </Box>
-        ))}
-      </List>
+              {children.map(({ id: childId, icon, active }) => (
+                <ListItem disablePadding key={childId} onClick={() => navigate(`/${childId}`)}>
+                  <ListItemButton selected={active} sx={item}>
+                    <ListItemIcon>{icon}</ListItemIcon>
+                    <ListItemText>{childId}</ListItemText>
+                  </ListItemButton>
+                </ListItem>
+              ))}
+              <Divider sx={{ mt: 2 }} />
+            </Box>
+          ))}
+        </List>
     </Drawer>
   );
 }

@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { TextField, Button, Stack, Toolbar, Grid, IconButton, AppBar, Paper } from "@mui/material"
+import { TextField, Toolbar, Grid, IconButton, AppBar, Paper } from "@mui/material"
 import { getSearchedPatient, setCurrentPage } from '../redux/features/patient/patientSlice';
 import Patient from './Patient';
 import AddPatient from './AddPatient';
 import SearchIcon from '@mui/icons-material/Search';
+import { useTranslation } from 'react-i18next';
 
 const SearchPatient = () => {
 
@@ -55,7 +56,7 @@ const SearchPatient = () => {
 
   //#endregion
 
-
+  const {t} = useTranslation()
 
   return (
     <>
@@ -71,7 +72,7 @@ const SearchPatient = () => {
               <Grid item >
                 <TextField
                   id="outlined-search"
-                  label="Search"
+                  label={t('search')}
                   type="search"
                   color="primary"
                   value={searchKey}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getPatient, setCurrentPage } from "../redux/features/patient/patientSlice";
+import { getGenders, getPatient, setCurrentPage } from "../redux/features/patient/patientSlice";
 import PatientTable from '../pages/PatientTable';
 
 const Patient = ({ searchedPatient, handlePageChangeSearch, totalSearch }) => {
@@ -9,7 +9,7 @@ const Patient = ({ searchedPatient, handlePageChangeSearch, totalSearch }) => {
     //#region DECLARATIONS AND FIRST DATA FETCHING starts 
 
     const dispatch = useDispatch();
-    const { patient, response, nextUrl, prevUrl, loading, error, currentPage } = useSelector(state => state.patient)
+    const { patient, response, nextUrl, prevUrl, loading, error, currentPage, genders } = useSelector(state => state.patient)
 
     console.log("veri:", patient);
     console.log("search edilmiş veriii:", searchedPatient);
@@ -17,6 +17,9 @@ const Patient = ({ searchedPatient, handlePageChangeSearch, totalSearch }) => {
 
     useEffect(() => {
         dispatch(getPatient(''))
+        if (genders.length <= 0) {
+            dispatch(getGenders());
+        }
     }, [dispatch])
 
     //#endregion
@@ -46,12 +49,12 @@ const Patient = ({ searchedPatient, handlePageChangeSearch, totalSearch }) => {
 
     //#endregion
 
-
     return (
         <>
             {
                 searchedPatient.length > 0 ? (<PatientTable
                     patient={searchedPatient}
+                    genders={genders}
                     loading={loading}
                     error={error}
                     currentPage={currentPage}
@@ -62,6 +65,7 @@ const Patient = ({ searchedPatient, handlePageChangeSearch, totalSearch }) => {
                     total={totalSearch}
                 />) : <PatientTable
                     patient={patient}
+                    genders={genders}
                     loading={loading}
                     error={error}
                     currentPage={currentPage}

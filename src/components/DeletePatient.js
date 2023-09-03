@@ -9,6 +9,7 @@ import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
 import { deletePatient, getSearchedPatient } from '../redux/features/patient/patientSlice';
+import { useTranslation } from 'react-i18next';
 
 const DeletePatient = (delID) => {
 
@@ -24,11 +25,13 @@ const DeletePatient = (delID) => {
     };
 
     const handleDelete = async() => {
-        console.log("BASILDI GELEN ID: ", delID.delID?.[0])
+        //console.log("BASILDI GELEN ID: ", delID.delID?.[0])
         await dispatch(deletePatient(delID.delID?.[0]))
         await dispatch(getSearchedPatient(''))
         handleClose();
     }
+
+    const {t} = useTranslation()
 
     return (
         <>
@@ -41,17 +44,17 @@ const DeletePatient = (delID) => {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title" color={'secondary'}>
-                    {"Delete Patient"}
+                <DialogTitle id="alert-dialog-title" color={'primary'}>
+                {t('deletePatientTitle')}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Are you sure to delete patient "ID:{delID.delID?.[0]}" record?
+                    {t('deletePatientText')} "ID:{delID.delID?.[0]}"
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color='secondary' onClick={handleClose}>Cancel</Button>
-                    <Button color='secondary' onClick={handleDelete} autoFocus>Delete</Button>
+                    <Button color='primary' onClick={handleClose}>{t('cancel')}</Button>
+                    <Button color='primary' onClick={handleDelete} autoFocus>{t('delete')}</Button>
                 </DialogActions>
             </Dialog>
         </>

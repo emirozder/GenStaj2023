@@ -7,7 +7,7 @@ const Countries = () => {
     const [stateData, setStateData] = useState();
     const [cityData, setCityData] = useState();
 
-    const [country, setCountry] = useState(countryData[0]);
+    const [country, setCountry] = useState(countryData[224]);
     const [state, setState] = useState();
     const [city, setCity] = useState();
 

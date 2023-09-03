@@ -10,6 +10,9 @@ export const patientSchema = yup.object().shape({
     birthDate: yup.string().matches(date_regex, {message: "Date must be 'YYYY-MM-DD' type."}).required("*Required"),
     contact: yup.string().matches(tr_phone_regex, {message: "*Please give a valid contact number"}).required("*Required"),
     address: yup.string().required("*Required"),
-    gender: yup.string().required("*Required"),
+    // country: yup.string().required("*Required"),
+    // city: yup.string().required("*Required"),
+    // state: yup.string().required("*Required"),
+    //gender: yup.string().required("*Required"),
     czNo: yup.string().matches(czNo_regex, {message: "*Please give a valid citizenship number"}).required("*Required")
 })

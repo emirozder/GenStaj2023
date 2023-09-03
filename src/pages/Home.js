@@ -9,6 +9,9 @@ import Navigator from './Navigator';
 import Content from './Content';
 import Header from './Header';
 import SearchPatient from '../components/SearchPatient';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+//import AppointmentTable from './AppointmentTable';
+import Appointment from '../components/Appointment';
 
 function Copyright() {
   return (
@@ -172,7 +175,7 @@ theme = {
 
 const drawerWidth = 256;
 
-export default function Paperbase() {
+export default function Home() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -188,25 +191,39 @@ export default function Paperbase() {
           component="nav"
           sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         >
-          {isSmUp ? null : (
+          {/* {isSmUp ? null : (
+            <Router>
+              <Routes>
+                <Navigator
+                  PaperProps={{ style: { width: drawerWidth } }}
+                  variant="temporary"
+                  open={mobileOpen}
+                  onClose={handleDrawerToggle}
+                />
+              </Routes>
+            </Router>
+          )} */}
+
+
+          <Router>
             <Navigator
               PaperProps={{ style: { width: drawerWidth } }}
-              variant="temporary"
-              open={mobileOpen}
-              onClose={handleDrawerToggle}
+              sx={{ display: { sm: 'block', xs: 'none' } }}
             />
-          )}
+          </Router>
 
-          <Navigator
-            PaperProps={{ style: { width: drawerWidth } }}
-            sx={{ display: { sm: 'block', xs: 'none' } }}
-          />
+
         </Box>
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <Header onDrawerToggle={handleDrawerToggle} />
           <Box component="main" sx={{ flex: 1, py: 3, px: 4, bgcolor: '#eaeff1' }}>
-            {/* <Content /> */}
-            <SearchPatient />
+            {/* <SearchPatient /> */}
+            <Router>
+              <Routes>
+                <Route path="/" element={<SearchPatient />} />
+                <Route path="/appointment" element={<Appointment />} />
+              </Routes>
+            </Router>
           </Box>
           <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
             <Copyright />

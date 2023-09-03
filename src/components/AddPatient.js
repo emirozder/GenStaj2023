@@ -1,7 +1,4 @@
 import { Button } from '@mui/material';
-//import { LocalizationProvider } from '@mui/x-date-pickers';
-//import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-//import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { addPatient, getPatient } from '../redux/features/patient/patientSlice';
@@ -65,7 +62,7 @@ const AddPatient = () => {
     const [address, setAddress] = useState('');
     const [czNo, setczNo] = useState('');
 
-    const handleSave = async (values, cou, sta, cit) => {
+    const handleSave = async (values, cou, sta, cit, gender_val) => {
         var addData = {
             resourceType: 'Patient',
             identifier: [
@@ -88,7 +85,7 @@ const AddPatient = () => {
                     given: [values.givenName],
                 },
             ],
-            gender: values.gender,
+            gender: gender_val,
             birthDate: values.birthDate,
             telecom: [{ system: 'phone', value: values.contact }],
             address: [{ text: [values.address], country: [cou], city: [sta], state: [cit] }],

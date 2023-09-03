@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Button, Modal, Box, TextField, Typography, Container, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Stack, Autocomplete } from '@mui/material';
+import React, { useEffect, useState } from 'react'
+import { Button, Modal, Box, TextField, Typography, Container, FormControl, Stack, Autocomplete, Select, InputLabel, MenuItem } from '@mui/material';
 import { useFormik } from 'formik';
 import { patientSchema } from '../schemas/patientSchema';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 const FormModal = ({ title, btnTxt, open, handleClose, givenName, familyName, birthDate, contact, address, countryData, stateData, cityData, country, changeCountry, city, changeCity, state, changeState, gender, czNo, handleSave }) => {
     const dispatch = useDispatch();
     const { genders } = useSelector(state => state.patient)
+    const [gender_val, setGender_val] = useState(gender);
 
     useEffect(() => {
         if (genders.length <= 0) {
@@ -16,11 +17,9 @@ const FormModal = ({ title, btnTxt, open, handleClose, givenName, familyName, bi
         }
     }, [dispatch])
 
-console.log("forma gelen ctr", country);
-console.log("forma gelen stt", state);
-console.log("forma gelen cty", city);
+
     const onSubmit = async (values, actions) => {
-        handleSave(values, country.name, city.name, state.name);
+        handleSave(values, country.name, city.name, state.name, gender_val);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         actions.resetForm()
     }
@@ -32,19 +31,15 @@ console.log("forma gelen cty", city);
             birthDate: birthDate.toString(),
             contact: contact.toString(),
             address: address.toString(),
-            gender: gender.toString(),
             czNo: czNo.toString()
         },
         validationSchema: patientSchema,
         onSubmit,
     });
 
-    const [inputValue, setInputValue] = React.useState(country);
-    const [inputValue2, setInputValue2] = React.useState(state);
-    const [inputValue3, setInputValue3] = React.useState(city);
 
-    const { t } = useTranslation()
-
+    const { t, i18n } = useTranslation()
+    //console.log("genders:", genders);
     return (
         <Modal
             open={open}
@@ -165,7 +160,7 @@ console.log("forma gelen cty", city);
                             renderInput={(params) => <TextField {...params} label={t('city')} />}
                         />}
                     </Stack>
-                    <FormControl>
+                    {/* <FormControl>
                         <FormLabel>{t('gender')}</FormLabel>
                         <RadioGroup row
                             name='gender'
@@ -178,6 +173,25 @@ console.log("forma gelen cty", city);
                                 <FormControlLabel value={genders.code} control={<Radio />} label={genders.display} />
                             ))}
                         </RadioGroup>
+                    </FormControl> */}
+                    <FormControl sx={{ maxWidth: 180 }}>
+                        <InputLabel id="demo-simple-select-label">{t('gender')}</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={gender_val}
+                            label={t('gender')}
+                            onChange={(e) => setGender_val(e.target.value)}
+                        >
+                            {/* {genders?.map((genders) => (
+                                <MenuItem value={genders.code}>{genders.display}</MenuItem>
+                            ))} */}
+                            {genders?.concept?.map((genders) => (
+                                <MenuItem key={genders.code} value={genders.code}>
+                                    {genders?.designation?.filter((element) => element.language === i18n.language)[0]?.value || genders?.display || ''}
+                                </MenuItem>
+                            ))}
+                        </Select>
                     </FormControl>
                     <Stack direction="row" spacing={2} justifyContent="center">
                         <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitting}>

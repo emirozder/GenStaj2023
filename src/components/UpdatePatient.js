@@ -14,10 +14,12 @@ const UpdatePatient = ({ id_val, czNo_val, given_val, family_val, birthDate_val,
     const handleOpen = () => {
 
         setOpen(true);
-        changeCountry(country_val);
-        changeState(state_val);
-        changeCity(city_val);
-        console.log("ilçe bilgisi", cityInfo.find(ctr => ctr.name === city_val));
+         setCountry(countryData.find(ctr => ctr.name === country_val));
+         setState(stateInfo?.find(ctr => ctr.name === state_val));
+         setCity(cityInfo?.find(ctr => ctr.name === city_val));
+        //changeCountry(country_val);
+        //changeState(state_val);
+        //changeCity(city_val);
         console.log("modal'a gidecek country", country);
         console.log("modal'a gidecek state", state);
         console.log("modal'a gidecek city", city);
@@ -36,8 +38,8 @@ const UpdatePatient = ({ id_val, czNo_val, given_val, family_val, birthDate_val,
     const [stateData, setStateData] = useState();
     const [cityData, setCityData] = useState();
     const [country, setCountry] = useState(countryData.find(ctr => ctr.name === country_val));
-    const [state, setState] = useState((stateInfo.find(ctr => ctr.name === state_val)));
-    const [city, setCity] = useState((cityInfo.find(ctr => ctr.name === city_val)));
+    const [state, setState] = useState();
+    const [city, setCity] = useState();
     const changeCountry = (value) => {
         setCountry(countryData.find(ctr => ctr.name === value));
     }
@@ -62,6 +64,9 @@ const UpdatePatient = ({ id_val, czNo_val, given_val, family_val, birthDate_val,
 
     useEffect(() => {
         cityData && setCity(cityData[0]);
+        if (state_val === state?.name) {
+            setCity(cityData?.find(ctr => ctr.name === city_val));
+        }
     }, [cityData]);
     //#endregion
 
@@ -74,7 +79,7 @@ const UpdatePatient = ({ id_val, czNo_val, given_val, family_val, birthDate_val,
     const [czNo, setczNo] = useState(czNo_val);
 
 
-    const handleSave = async (values, cou, sta, cit) => {
+    const handleSave = async (values, cou, sta, cit, gender_val) => {
         var updData = {
             resourceType: 'Patient',
             id: id_val,
@@ -98,7 +103,7 @@ const UpdatePatient = ({ id_val, czNo_val, given_val, family_val, birthDate_val,
                     given: [values.givenName],
                 },
             ],
-            gender: values.gender,
+            gender: gender_val,
             birthDate: values.birthDate,
             telecom: [{ system: 'phone', value: values.contact }],
             address: [{ text: [values.address], country: [cou], city: [sta], state: [cit] }],
